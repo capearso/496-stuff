@@ -28,10 +28,10 @@ class GoBoard(object):
         """
         move_inspection, msg =self._play_move(point,color)
         if not move_inspection:
-            return False
+            return False,msg
         else:
             self.last_played_color = color
-            return True
+            return True,msg
 
     @staticmethod
     def showboard(board,bd_size):
@@ -58,7 +58,6 @@ class GoBoard(object):
             Whether the playing point with the given color is
             legal.
         """
-      
         sboard = np.array(self.board, copy=True)
         # swap out true board for simulation board, and try to play the move
         result, _=self._play_move(point, color)
@@ -409,6 +408,7 @@ class GoBoard(object):
         ---------
         State of move and appropriate message for that move
         """
+
         if self.board[point] != EMPTY:
             c=self._point_to_coord(point)
             msg = "Row and Column: %d %d is already filled with a %s stone"%(c[0],c[1],GoBoardUtil.int_to_color(color))
@@ -433,11 +433,11 @@ class GoBoard(object):
                         #self.caps = np.where(fboard==FLOODFILL)
                         self.caps += list(*np.where(fboard==FLOODFILL))
                         num_captures = np.sum(cap_inds)
-                        if cap_inds != None:
-                            msg = "Captures not allowed"
-                            return False , msg
                         if num_captures == self.size*self.size:
                             self._is_empty = True
+                        if num_captures >= 1:
+                            msg= "Capture"
+                            return False,msg
                         if num_captures == 1:
                             single_captures.append(n)
                         if color==WHITE:

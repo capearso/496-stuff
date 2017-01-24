@@ -27,7 +27,7 @@ class GtpConnection():
         board: GoBoard
             SIZExSIZE array representing the current board state
         """
-        mode='w+'
+        mode='w'
         self.stdout = sys.stdout
         #sys.stdout = outfile
         self._debug_mode = debug_mode
@@ -293,7 +293,7 @@ class GtpConnection():
             color= GoBoardUtil.color_to_int(board_color)
             if args[1].lower()=='pass':
                 self.debug_msg("Player {} is passing\n".format(args[0]))
-                self.respond()
+                self.respond("illegal move: {}".format(board_move))
                 return
             move = GoBoardUtil.move_to_coord(args[1], self.board.size)
             if move:
@@ -302,8 +302,10 @@ class GtpConnection():
             else:
                 self.error("Error in executing the move %s, check given move: %s"%(move,args[1]))
                 return
+            temp,msg = self.board.move(move, color)
             if not self.board.move(move, color):
-                self.respond("Illegal Move: {}".format(board_move))
+                #self.respond("Illegal Move: Test {}".format(board_move))
+                self.respond(msg)
                 return
             else:
                 self.debug_msg("Move: {}\nBoard:\n{}\n".format(board_move, str(self.board.get_twoD_board())))
@@ -333,7 +335,9 @@ class GtpConnection():
                                                           self.board.ko_constraint))
             move = self.go_engine.get_move(self.board, color)
             if move is None:
-                self.respond("pass")
+                #self.respond("pass")
+                board_move = "Passing"
+                self.respond("Illegal move: {}".format(board_move))
                 return
 
             if not self.board.check_legal(move, color):
