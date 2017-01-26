@@ -1,6 +1,5 @@
 """
 Module for playing games of Go using GoTextProtocol
-
 This code is based off of the gtp module in the Deep-Go project
 by Isaac Henrion and Aamos Storkey at the University of Edinburgh.
 """
@@ -17,7 +16,6 @@ class GtpConnection():
     def __init__(self, go_engine,outfile = 'gtp_log', debug_mode = False):
         """
         object that plays Go using GTP
-
         Parameters
         ----------
         go_engine : GoPlayer
@@ -93,7 +91,6 @@ class GtpConnection():
     def get_cmd(self, command):
         """
         parse the command and execute it
-
         Arguments
         ---------
         command : str
@@ -128,14 +125,12 @@ class GtpConnection():
     def arg_error(self, cmd, argnum):
         """
         checker funciton for the number of arguments given to a command
-
         Arguments
         ---------
         cmd : str
             the command name
         argnum : int
             number of parsed argument
-
         Returns
         -------
         True if there was an argument error
@@ -162,7 +157,6 @@ class GtpConnection():
     def reset(self, size):
         """
         Resets the state of the GTP to a starting board
-
         Arguments
         ---------
         size : int
@@ -195,7 +189,6 @@ class GtpConnection():
     def boardsize_cmd(self, args):
         """
         Reset the game and initialize with a new boardsize
-
         Arguments
         ---------
         args[0] : int
@@ -204,13 +197,13 @@ class GtpConnection():
         self.reset(int(args[0]))
         self.respond()
 
+
     def showboard_cmd(self, args):
         self.respond('\n' + str(self.board.get_twoD_board()))
 
     def komi_cmd(self, args):
         """
         Set the komi for the game
-
         Arguments
         ---------
         args[0] : float
@@ -222,7 +215,6 @@ class GtpConnection():
     def known_command_cmd(self, args):
         """
         Check if a command is known to the GTP interface
-
         Arguments
         ---------
         args[0] : str
@@ -240,7 +232,6 @@ class GtpConnection():
     def set_free_handicap(self, args):
         """
         clear the board and set free handicap for the game
-
         Arguments
         ---------
         args[0] : str
@@ -276,7 +267,6 @@ class GtpConnection():
     def play_cmd(self, args):
         """
         play a move as the given color
-
         Arguments
         ---------
         args[0] : {'b','w'}
@@ -290,13 +280,19 @@ class GtpConnection():
         try:
             board_color = args[0].lower()
             board_move = args[1]
-            color= GoBoardUtil.color_to_int(board_color,board_move)
+            if (board_color !='b'):
+            	if board_color != 'w':
+            			self.respond("illegal move %s %s (wrong color) " %(board_color,args[1]))
+            			return
+            color= GoBoardUtil.color_to_int(board_color)
             if args[1].lower()=='pass':
                 self.debug_msg("Player {} is passing\n".format(args[0]))
                 self.respond("illegal move: {}".format(board_move))
-                print("test")
                 return
-            move = GoBoardUtil.move_to_coord(args[1], self.board.size)
+            move,msg = GoBoardUtil.move_to_coord(args[1], self.board.size,args[0])
+            if move == False:
+            	self.respond(msg)
+            	return
             if move:
                 move = self.board._coord_to_point(move[0],move[1])
             # move == None on pass
@@ -320,7 +316,6 @@ class GtpConnection():
     def genmove_cmd(self, args):
         """
         generate a move for the specified color
-
         Arguments
         ---------
         args[0] : {'b','w'}
@@ -356,4 +351,3 @@ class GtpConnection():
             self.respond(board_move)
         except Exception as e:
             self.respond('Error: {}'.format(str(e)))
-
