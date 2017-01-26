@@ -119,7 +119,7 @@ class GoBoardUtil(object):
         return    column_letters[col-1]+ str(row) 
         
     @staticmethod
-    def move_to_coord(point, board_size,*color):
+    def move_to_coord(point, board_size):
         """
         Interpret a string representing a point, as specified by GTP.
 
@@ -160,8 +160,7 @@ class GoBoardUtil(object):
         except (IndexError, ValueError):
             raise ValueError("invalid point: '%s'" % s)
         if not (col <= board_size and row <= board_size):
-            msg = "illegal move: %s %s (wrong coordinate)" % (*color,s)
-            return False, msg
+            raise ValueError("point is off board: '%s'" % s)
         return row, col
     
     @staticmethod
@@ -173,13 +172,13 @@ class GoBoardUtil(object):
             raise ValueError("Wrong color provided for opponent function")
             
     @staticmethod
-    def color_to_int(c):
+    def color_to_int(c, move=None):
         """convert character representing player color to the appropriate number"""
         color_to_int = {"b": BLACK , "w": WHITE, "e":EMPTY, "BORDER":BORDER, "FLOODFILL":FLOODFILL}
         try:
            return color_to_int[c]
         except:
-          	raise ValueError("Illegal move %s %s (wrong color) " % c)
+            raise ValueError("Illegal move %s (wrong color) " % move)
     
     @staticmethod
     def int_to_color(i):
