@@ -442,8 +442,9 @@ class GoBoard(object):
                         else :
                             self.black_captures += num_captures
                         if num_captures >= 1:
-                            msg= "Capture"
-                            return False,msg
+                        	self.board[point] = EMPTY
+                        	msg= "Capture"
+                        	return False,msg
                         self.board[cap_inds]=EMPTY
         in_enemy_eye = self._is_eyeish(point) != color
         fboard = self._flood_fill(point)
