@@ -4,6 +4,7 @@ WHITE = 2
 BORDER = 3
 FLOODFILL = 4
 import numpy as np
+import gtp_connection 
 
 class GoBoardUtil(object):
     
@@ -171,13 +172,13 @@ class GoBoardUtil(object):
             raise ValueError("Wrong color provided for opponent function")
             
     @staticmethod
-    def color_to_int(c):
+    def color_to_int(c, move=None):
         """convert character representing player color to the appropriate number"""
         color_to_int = {"b": BLACK , "w": WHITE, "e":EMPTY, "BORDER":BORDER, "FLOODFILL":FLOODFILL}
         try:
-           return color_to_int[c] 
+           return color_to_int[c]
         except:
-            raise ValueError("Valid color characters are: b, w, e, BORDER and FLOODFILL. please provide the input in this format ")
+            raise ValueError("Illegal move %s (wrong color) " % move)
     
     @staticmethod
     def int_to_color(i):

@@ -1,0 +1,9 @@
+
+boardsize 7
+clear_board
+play B A5
+play W A6
+play B B6
+genmove w
+10 play B A7
+#? [= illegal move: b b7 (captured)]
