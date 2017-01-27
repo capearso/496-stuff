@@ -119,7 +119,7 @@ class GoBoardUtil(object):
         return    column_letters[col-1]+ str(row) 
         
     @staticmethod
-    def move_to_coord(point, board_size):
+    def move_to_coord(point, board_size,*color):
         """
         Interpret a string representing a point, as specified by GTP.
 
@@ -160,7 +160,9 @@ class GoBoardUtil(object):
         except (IndexError, ValueError):
             raise ValueError("invalid point: '%s'" % s)
         if not (col <= board_size and row <= board_size):
-            raise ValueError("point is off board: '%s'" % s)
+            msg = "illegal move: %s %s (wrong coordinate)" % (*color,s)
+            return False, msg
+            #raise ValueError("point is off board: '%s'" % s)
         return row, col
     
     @staticmethod

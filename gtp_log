@@ -1,6 +1,48 @@
+= illegal move: b b99 (wrong coordinate)
+
+= 
+
 = 
 
 = 
 
-= illegal move: w a1  (suicide)
+= illegal move: w b1  (occupied)
+
+= illegal move: c3 (wrong number of arguments)
+
+= illegal move r c3 (wrong color) 
+
+= illegal move 1 c3 (wrong color) 
+
+= illegal move: w c99 (wrong coordinate)
+
+= 
+
+= illegal move: b a2  (capture)
+
+= illegal move: b2 (wrong number of arguments)
+
+= 
+
+= 
+
+= 
+[[2 1 0 0 0 0 0]
+ [0 1 0 0 0 0 0]
+ [1 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0]]
+
+= illegal move: w a2  (suicide)
+
+= 
+[[2 1 0 0 0 0 0]
+ [0 1 0 0 0 0 0]
+ [1 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0]]
 
