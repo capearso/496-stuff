@@ -320,7 +320,7 @@ class GtpConnection():
             temp,msg = self.board.move(move, color)
             if temp == False:
                 #self.respond("Illegal Move: Test {}".format(board_move))
-                self.respond("illegal move: " + args[0] +' ' + board_move + "  (" + msg + ")")
+                self.respond("illegal move: " + args[0] +' ' + board_move + " (" + msg + ")")
                 return 
             else:
                 self.debug_msg("Move: {}\nBoard:\n{}\n".format(board_move, str(self.board.get_twoD_board())))
