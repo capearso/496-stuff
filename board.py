@@ -411,8 +411,7 @@ class GoBoard(object):
 
         if self.board[point] != EMPTY:
             c=self._point_to_coord(point)
-            msg = "occupied"
-            #msg = "Row and Column: %d %d is already filled with a %s stone"%(c[0],c[1],GoBoardUtil.int_to_color(color))
+            msg = "Row and Column: %d %d is already filled with a %s stone"%(c[0],c[1],GoBoardUtil.int_to_color(color))
             return False,msg
         if point == self.ko_constraint:
             msg ="KO move is not permitted!"
@@ -443,8 +442,9 @@ class GoBoard(object):
                         else :
                             self.black_captures += num_captures
                         if num_captures >= 1:
-                            msg= "Capture"
-                            return False,msg
+                        	self.board[point] = EMPTY
+                        	msg= "Capture"
+                        	return False,msg
                         self.board[cap_inds]=EMPTY
         in_enemy_eye = self._is_eyeish(point) != color
         fboard = self._flood_fill(point)
@@ -460,7 +460,7 @@ class GoBoard(object):
             if cap_inds!= None:
                 self.board[cap_inds]=GoBoardUtil.opponent(color)
             c=self._point_to_coord(point)
-            msg = "suicide"
+            msg = "Suicide move with color %s in the row and column: %d %d "%(color, c[0],c[1])
             return False, msg
 
 
