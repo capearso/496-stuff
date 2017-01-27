@@ -1,6 +1,10 @@
-= 
+b
+= illegal move: b b99 (wrong coordinate)
 
 = 
 
-= illegal move: w a1  (suicide)
+= 
+
+w
+= illegal move: w c99 (wrong coordinate)
 
