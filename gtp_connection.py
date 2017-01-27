@@ -146,9 +146,9 @@ class GtpConnection():
         command = cmd[0]
         if command in self.argmap and self.argmap[command][0] > argnum:
                 if len(cmd) > 1:
-                    self.respond("illegal move: %s (wrong number of arguments)" % cmd[1])
+                    self.respond("illegal move: %s wrong number of arguments" % cmd[1])
                 elif cmd[0] == "play":
-                    self.respond("illegal move: %s (wrong number of arguments)" % cmd[0])
+                    self.respond("illegal move: %s wrong number of arguments" % cmd[0])
                 else:
                     self.error(self.argmap[command][1])
                 return True
@@ -300,7 +300,7 @@ class GtpConnection():
             board_move = args[1]
             if (board_color !='b'):
             	if board_color != 'w':
-            			self.respond("illegal move %s %s (wrong color) " %(board_color,args[1]))
+            			self.respond("illegal move: %s %s wrong color" %(board_color,args[1]))
             			return
             color= GoBoardUtil.color_to_int(board_color,board_move)
             if args[1].lower()=='pass':
@@ -320,7 +320,7 @@ class GtpConnection():
             temp,msg = self.board.move(move, color)
             if temp == False:
                 #self.respond("Illegal Move: Test {}".format(board_move))
-                self.respond("illegal move: " + args[0] +' ' + board_move + " (" + msg + ")")
+                self.respond("illegal move: " + args[0] +' ' + board_move + " " + msg)
                 return 
             else:
                 self.debug_msg("Move: {}\nBoard:\n{}\n".format(board_move, str(self.board.get_twoD_board())))
@@ -351,8 +351,8 @@ class GtpConnection():
             move = self.go_engine.get_move(self.board, color)
             if move is None:
                 #self.respond("pass")
-                board_move = "Passing"
-                self.respond("Illegal move: {}".format(board_move))
+                board_move = "passing"
+                self.respond("illegal move: {}".format(board_move))
                 return
 
             if not self.board.check_legal(move, color):

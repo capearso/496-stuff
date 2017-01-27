@@ -160,7 +160,7 @@ class GoBoardUtil(object):
         except (IndexError, ValueError):
             raise ValueError("invalid point: '%s'" % s)
         if not (col <= board_size and row <= board_size):
-            msg = "illegal move: %s %s (wrong coordinate)" % (*color,s)
+            msg = "illegal move: %s %s wrong coordinate" % (*color,s)
             return False, msg
             #raise ValueError("point is off board: '%s'" % s)
         return row, col
@@ -180,7 +180,7 @@ class GoBoardUtil(object):
         try:
            return color_to_int[c]
         except:
-            raise ValueError("Illegal move %s (wrong color) " % move)
+            raise ValueError("Illegal move %s wrong color" % move)
     
     @staticmethod
     def int_to_color(i):
