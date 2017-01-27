@@ -140,8 +140,8 @@ class GoBoard(object):
                 point = self._coord_to_point(x,y)
                 if self.get_color(point)!=EMPTY:
                     continue
-                if self.is_eye(point,color):
-                    continue
+                #if self.is_eye(point,color):
+                    #continue
                 if self.ko_constraint==point:
                     continue
                 moves.append(point)
