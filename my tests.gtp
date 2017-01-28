@@ -1,0 +1,70 @@
+#Test case 1
+#Testing suicide
+boardsize 2
+clear_board
+
+play b a1
+10 legal_moves w
+#? [a2 b1 b2]
+#Everything should be fine
+
+play b b2
+20 legal_moves w
+#? []
+#White cannot suicide into either hole
+
+##############################################
+#Test case 2
+#Testing Capture
+boardsize 2
+clear_board
+
+play b a1
+30 legal_moves w
+#? [a2 b1 b2]
+#Everything should be fine
+
+play w a2
+40 legal_moves w
+#? [b2]
+#b1 is illegal as it is a capture
+
+#############################################
+#Test case 3
+#Testing eye filling, same set up as Test 1
+boardsize 2
+clear_board
+
+play b a1
+50 legal_moves b
+#? [a2 b1 b2]
+#Everything should be fine
+
+play b b2
+60 legal_moves b
+#? [a2 b1]
+#Filling eyes should be allowed
+
+##############################################
+#Test case 4
+#Testing out of bounds output
+boardsize 2
+clear_board
+
+70 play b a20
+#= illegal move: b a20 (wrong coordinate)
+#There is no 20th spot on a 2x2 board
+
+
+###############################################
+#Test case 5
+#Testing arg values
+boardsize 9
+clear_board
+80 play  a99
+#= illegal move: a99 (wrong number of arguments)
+#Number of args should come up before wrong coords
+
+90 play q
+#= illegal move: q (wrong number of arguments)
+#number of args should come up before wrong color
