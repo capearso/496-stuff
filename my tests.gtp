@@ -20,12 +20,9 @@ boardsize 2
 clear_board
 
 play b a1
-30 legal_moves w
-#? [a2 b1 b2]
-#Everything should be fine
 
 play w a2
-40 legal_moves w
+30 legal_moves w
 #? [b2]
 #b1 is illegal as it is a capture
 
@@ -36,35 +33,44 @@ boardsize 2
 clear_board
 
 play b a1
-50 legal_moves b
-#? [a2 b1 b2]
-#Everything should be fine
 
 play b b2
-60 legal_moves b
+40 legal_moves b
 #? [a2 b1]
 #Filling eyes should be allowed
 
 ##############################################
 #Test case 4
-#Testing out of bounds output
-boardsize 2
+#Testing errors
+boardsize 9
 clear_board
 
-70 play b a20
+50 play b a20
 #? [illegal move: b a20 wrong coordinate]
 #There is no 20th spot on a 2x2 board
 
-
-###############################################
-#Test case 5
-#Testing arg values
-boardsize 9
-clear_board
-80 play  a99
+60 play  a99
 #? [illegal move: a99 wrong number of arguments]
 #Number of args should come up before wrong coords
 
-90 play q
+70 play q
 #? [illegal move: q wrong number of arguments]
 #number of args should come up before wrong color
+
+80 play q a2
+#? [illegal move: q a2 wrong color]
+#Check for wrong color
+
+play b a1
+
+90 play w a1
+#? [illegal move: w a1 occupied]
+#Just checking occupied errors
+
+play b a2
+
+play b b1
+
+100 play w b2
+#? [illegal move: w b2 capture]
+# Capture should come before suicide
