@@ -67,10 +67,14 @@ play b a1
 #? [illegal move: w a1 occupied]
 #Just checking occupied errors
 
+################################################
+#Test set 5
+boardsize 2
+clear_board
+
+play b a1
 play b a2
-
 play b b1
-
 100 play w b2
 #? [illegal move: w b2 capture]
 # Capture should come before suicide
