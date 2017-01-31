@@ -160,7 +160,7 @@ class GoBoardUtil(object):
         except (IndexError, ValueError):
             raise ValueError("invalid point: '%s'" % s)
         if not (col <= board_size and row <= board_size):
-            msg = "illegal move: %s %s wrong coordinate" % (*color,s)
+            msg = "illegal move: %s %s wrong coordinate" % (*str(color),s)
             return False, msg
             #raise ValueError("point is off board: '%s'" % s)
         return row, col
