@@ -33,6 +33,8 @@ class GtpConnection():
         self.board = GoBoard(7)
         self.timelimit = 1
         self.toPlay = 'b'
+        self.startTime
+        self.timeUsed = 0
         self.commands = {
             "protocol_version": self.protocol_version_cmd,
             "quit": self.quit_cmd,
