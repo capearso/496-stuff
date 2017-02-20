@@ -1,6 +1,5 @@
 """
 Module for playing games of Go using GoTextProtocol
-
 This code is based off of the gtp module in the Deep-Go project
 by Isaac Henrion and Amos Storkey at the University of Edinburgh.
 """
@@ -18,7 +17,6 @@ class GtpConnection():
     def __init__(self, go_engine, debug_mode = False):
         """
         object that plays Go using GTP
-
         Parameters
         ----------
         go_engine: GoPlayer
@@ -33,7 +31,7 @@ class GtpConnection():
         self.board = GoBoard(7)
         self.timelimit = 1
         self.toPlay = 'b'
-        self.startTime
+        self.starttime
         self.timeUsed = 0
         self.commands = {
             "protocol_version": self.protocol_version_cmd,
@@ -93,7 +91,6 @@ class GtpConnection():
     def get_cmd(self, command):
         """
         parse the command and execute it
-
         Arguments
         ---------
         command : str
@@ -133,14 +130,12 @@ class GtpConnection():
     def arg_error(self, cmd, argnum):
         """
         checker funciton for the number of arguments given to a command
-
         Arguments
         ---------
         cmd : str
             the command name
         argnum : int
             number of parsed argument
-
         Returns
         -------
         True if there was an argument error
@@ -167,7 +162,6 @@ class GtpConnection():
     def reset(self, size):
         """
         Resets the state of the GTP to a starting board
-
         Arguments
         ---------
         size : int
@@ -200,7 +194,6 @@ class GtpConnection():
     def boardsize_cmd(self, args):
         """
         Reset the game and initialize with a new boardsize
-
         Arguments
         ---------
         args[0] : int
@@ -215,7 +208,6 @@ class GtpConnection():
     def komi_cmd(self, args):
         """
         Set the komi for the game
-
         Arguments
         ---------
         args[0] : float
@@ -227,7 +219,6 @@ class GtpConnection():
     def known_command_cmd(self, args):
         """
         Check if a command is known to the GTP interface
-
         Arguments
         ---------
         args[0] : str
@@ -245,7 +236,6 @@ class GtpConnection():
     def set_free_handicap(self, args):
         """
         clear the board and set free handicap for the game
-
         Arguments
         ---------
         args[0] : str
@@ -281,7 +271,6 @@ class GtpConnection():
     def play_cmd(self, args):
         """
         play a move as the given color
-
         Arguments
         ---------
         args[0] : {'b','w'}
@@ -320,7 +309,6 @@ class GtpConnection():
     def genmove_cmd(self, args):
         """
         generate a move for the specified color
-
         Arguments
         ---------
         args[0] : {'b','w'}
@@ -372,13 +360,33 @@ class GtpConnection():
             self.respond('unknown')
         else:
             self.respond(win)
-    def solve(self):
-        start = time.process_time()
-        timeUsed = 0
-        while(timeUsed < self.timelimit):
-            timeUsed = time.process_time() - start
-            #Do things
-        return("unknown")
-
+    def solve(self): 
+        self.starttime = time.process_time()
+        self.timeUsed = 0 
+        tempboard = self.board.get_twoD_board() #Create the board to replace after sims
+        win = winforBlack(self.board.get_twoD_board())
+        for m in generate_legal_moves(self.board,args[1]):
+            negamaxBoolean(tempboard)
+        
     
+    def negamaxBoolean(state,self):
+        timeUsed = time.process_time() - self.starttime
+        if timeUsed >= self.timelimit:
+            return "unknown"
+        legamoves = generate_legal_moves(self.board,args[1])
+        if state.endOfGame():
+            return isSuccess(state)
+        for m in legamoves:
+            state.play(m)
+            success = not negamaxBoolean(self.board.get_twoD_board())
+            state.undoMove()
+            if success:
+                return m #returns move in legal move
+        return False
 
+    def winforBlack(state,self)
+        result = negamaxBoolean(state)
+        if self.toPlay == "b":
+            return result
+        else:
+            return not result
