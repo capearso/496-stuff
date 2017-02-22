@@ -368,6 +368,39 @@ class GtpConnection():
         for m in generate_legal_moves(self.board,args[1]):
             negamaxBoolean(tempboard)
         
+        def Solve(self,board,color):
+        GoBoard.copy(board)
+        if color == 1:
+            player = 'b'
+            toPlay = 'w'
+        else:
+            player = 'w'
+            toPlay = 'b'
+        legalmove = GoBoardUtil.generate_legal_moves(board, color,True)
+        for m in legalmove:
+            self._play_move(m,color)
+            if win == player:
+                return m
+            else:
+                return toPlay
+    
+    def play_move(self,board,color):
+        board = board.Copy()
+        legalmoves = GoBoardUtil.generate_legal_moves(board, color)
+        print(legalmove) #get legal moves
+        if color == "w":
+            toPlay = 'b'
+            color = int(color=2)
+        else:
+            toPlay = 'w'
+            color = int(color=1)
+        if (legalmoves == []):
+            return toPlay  #returns True if winning move found
+        for m in legalmoves:
+            print(m)
+            board[m] = color
+            play_move(board,toPlay)
+
     
     def negamaxBoolean(state,self):
         timeUsed = time.process_time() - self.starttime
