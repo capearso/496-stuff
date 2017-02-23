@@ -11,6 +11,7 @@ from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, FLOODFILL
 import numpy as np
 import re
 import time
+import copy
 
 class GtpConnection():
 
@@ -33,6 +34,7 @@ class GtpConnection():
         self.toPlay = 'b'
         self.starttime = time.process_time()
         self.timeUsed = 0
+        self.tempboard = GoBoard(7)
         self.commands = {
             "protocol_version": self.protocol_version_cmd,
             "quit": self.quit_cmd,
@@ -168,6 +170,7 @@ class GtpConnection():
             the boardsize to reinitialize the state to
         """
         self.board.reset(size)
+        self.tempboard.reset(size)
 
     def protocol_version_cmd(self, args):
         """ Return the GTP protocol version being used (always 2) """
@@ -204,6 +207,7 @@ class GtpConnection():
 
     def showboard_cmd(self, args):
         self.respond('\n' + str(self.board.get_twoD_board()))
+
 
     def komi_cmd(self, args):
         """
@@ -263,7 +267,7 @@ class GtpConnection():
         try:
             board_color = args[0].lower()
             color = GoBoardUtil.color_to_int(board_color)
-            moves = GoBoardUtil.generate_legal_moves(self.board, color)
+            moves = GoBoardUtil.generate_legal_moves(self.board, color,False)
             self.respond(moves)
         except Exception as e:
             self.respond('Error: {}'.format(str(e)))
@@ -321,29 +325,39 @@ class GtpConnection():
             board_color = args[0].lower()
             self.toPlay = board_color
             color = GoBoardUtil.color_to_int(board_color)
-            move = self.go_engine.get_move(self.board, color)
-            if move is None:
-                self.respond("resign")
-                return
-
-            if not self.board.check_legal(move, color):
-                move = self.board._point_to_coord(move)
-                board_move = GoBoardUtil.format_point(move)
-                self.respond("Illegal move: {}".format(board_move))
-                raise RuntimeError("Illegal move given by engine")
-
-            # move is legal; play it
-            self.board.move(move, color)
-            self.debug_msg("Move: {}\nBoard: \n{}\n".format(move, str(self.board.get_twoD_board())))
-            move = self.board._point_to_coord(move)
-            board_move = GoBoardUtil.format_point(move)
-
-            #Changes to play to the next player
-            if self.toPlay == 'b':
-                self.toPlay = 'w'
-            else:
-                self.toPlay = 'b'
-            self.respond(board_move)
+            move = self.Solve(self.board,color)
+            print(move)
+            if move[0] == True:
+                print("Before Respond1")
+                self.debug_msg("Move: {}\nBoard: \n{}\n".format(move[1], str(self.board.get_twoD_board())))
+                print("Before Respond2")
+                if self.toPlay == 'b':
+                    self.toPlay = 'w'
+                else:
+                    self.toPlay = 'b'
+                m = GoBoardUtil.move_to_coord(move[1],self.board.size)
+                m = self.board._coord_to_point(m[0],m[1])
+                self.board.move(m, color)
+                self.respond(move[1])
+            elif move[0] == False:
+                print("DID I BREAK")
+                test = self.go_engine.get_move(self.board, color)
+                if test is None:
+                    self.respond("resign")
+                    return
+                else:
+                    print("BRoken")
+                    print(test)
+                    m = self.board._point_to_coord(test)
+                    point = GoBoardUtil.format_point(m)
+                    m = self.board._coord_to_point(m[0],m[1])
+                    if self.toPlay == 'b':
+                        self.toPlay = 'w'
+                    else:
+                        self.toPlay = 'b'
+                    print(m)
+                    self.board.move(m, color)
+                    self.respond(point)
         except Exception as e:
             self.respond('Error: {}'.format(str(e)))
 
@@ -360,33 +374,43 @@ class GtpConnection():
             self.respond('unknown')
         else:
             self.respond(win)
-    def solve(self): 
-        self.starttime = time.process_time()
-        self.timeUsed = 0 
-        tempboard = self.board.get_twoD_board() #Create the board to replace after sims
-        win = winforBlack(self.board.get_twoD_board())
-        for m in generate_legal_moves(self.board,args[1]):
-            negamaxBoolean(tempboard)
-        
-    
-    def negamaxBoolean(state,self):
-        timeUsed = time.process_time() - self.starttime
-        if timeUsed >= self.timelimit:
-            return "unknown"
-        legamoves = generate_legal_moves(self.board,args[1])
-        if state.endOfGame():
-            return isSuccess(state)
-        for m in legamoves:
-            state.play(m)
-            success = not negamaxBoolean(self.board.get_twoD_board())
-            state.undoMove()
-            if success:
-                return m #returns move in legal move
-        return False
 
-    def winforBlack(state,self):
-        result = negamaxBoolean(state)
-        if self.toPlay == "b":
-            return result
+    def Solve(self,board,color):
+        tempboard = board
+        print(board)
+        print(tempboard)
+        if color == 1:
+            player = 1
+            toPlay = 2
         else:
-            return not result
+            player =  2
+            toPlay =  1
+        legalmove = GoBoardUtil.generate_legal_moves(self.tempboard, color,True)
+        print(legalmove)
+        for m in legalmove:
+            move = GoBoardUtil.move_to_coord(m,self.tempboard.size)
+            move = self.board._coord_to_point(move[0],move[1])
+            self.tempboard.move(move, color)
+            win = self.play_move(self.tempboard,toPlay)
+            if win:
+                return True,m
+            #tempboard[move] = 0
+        return False, False
+    
+    def play_move(self,board,color):
+        if color == 2:
+            toPlay = 1
+        else:
+            toPlay = 2
+        legalmoves = GoBoardUtil.generate_legal_moves(self.tempboard, color, True)
+          #returns True if winning move found
+        for m in legalmoves:
+            move = GoBoardUtil.move_to_coord(m,self.tempboard.size)
+            move = self.board._coord_to_point(move[0],move[1])
+            if self.tempboard.check_legal(move,color):
+                self.tempboard.move(move, color)
+                win = self.play_move(self.tempboard,toPlay)
+                if win:
+                    return True
+                self.tempboard[move] = 0
+        return False
