@@ -192,6 +192,7 @@ class GtpConnection():
     def clear_board_cmd(self, args):
         """ clear the board """
         self.reset(self.board.size)
+        self.toPlay = 'b'
         self.respond()
 
     def boardsize_cmd(self, args):
@@ -363,11 +364,15 @@ class GtpConnection():
         self.respond()
 
     def solve_cmd(self,args):
-        win = solve()
+        if self.toPlay == 'b':
+            color = 1
+        else:
+            color = 2
+        win = self.Solve(self.board,color)
         if win == 'unknown':
             self.respond('unknown')
         else:
-            self.respond(win)
+            self.respond(self.toPlay+ " "+ win[1])
 
     def Solve(self,board,color):
         win = False
