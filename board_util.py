@@ -38,7 +38,7 @@ class GoBoardUtil(object):
         if bool == False:
             return sorted_moves
         else:
-            return gtp_moves
+            return sorted(gtp_moves)
             
     @staticmethod       
     def generate_random_move(board, color):

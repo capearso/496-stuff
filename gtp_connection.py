@@ -366,57 +366,64 @@ class GtpConnection():
     def solve_cmd(self,args):
         if self.toPlay == 'b':
             color = 1
+            player = "b"
+            self.toPlay = 'w'
         else:
             color = 2
+            player = "w"
+            self.toPlay = 'b'
         win = self.Solve(self.board,color)
+        print(win)
         if win == 'unknown':
             self.respond('unknown')
+        elif win[0] == True:
+            move = GoBoardUtil.move_to_coord(win[1],self.board.size)
+            move = self.board._coord_to_point(move[0],move[1])
+            board = self.board.SetMove(self.board,move, color)
+            self.respond(player + " "+ win[1])
         else:
-            self.respond(self.toPlay+ " "+ win[1])
+            self.respond(self.toPlay)
+
 
     def Solve(self,board,color):
-        win = False
-        playing = color
         if color == 1:
-            player = 1
             toPlay = 2
         else:
-            player =  2
-            toPlay =  1
-        legalmove = GoBoardUtil.generate_legal_moves(self.board, color,True)
-        print(legalmove)
-        for m in legalmove:
-            move = GoBoardUtil.move_to_coord(m,self.board.size)
-            move = self.board._coord_to_point(move[0],move[1])
-            print(m,color)
-            tempboard = self.board.SetMove(board,move, color)
-            win = self.play_move(self.board,toPlay,playing)
-            if win:
-                board = self.board.SetMove(board,move,0)
-                return True,m
-            board = self.board.SetMove(board,move,0)
-        return False, False
-    
-    def play_move(self,board,color,playing):
-        if color == 2:
             toPlay = 1
-        else:
-            toPlay = 2
         legalmoves = GoBoardUtil.generate_legal_moves(self.board, color, True)
-          #returns True if winning move found
-        print(legalmoves)
         if not legalmoves:
-            if color == playing:
-                return False
-            return True
+            return False,False
         for m in legalmoves:
+            print(legalmoves)
+            print(m)
             move = GoBoardUtil.move_to_coord(m,self.board.size)
             move = self.board._coord_to_point(move[0],move[1])
-            tempboard = self.board.SetMove(board,move, color)
-            print(m,color)
-            win =self.play_move(self.board,toPlay,playing)
-            if win:
-                board = self.board.SetMove(board,move,0)
-                return True
+            board = self.board.SetMove(board,move, color)
+            success =  self.MinimaxBooleanAND(board,toPlay)
             board = self.board.SetMove(board,move,0)
-        return False
+            print(success)
+            if success[0]:
+                return True,m
+        return False, False
+
+    def MinimaxBooleanAND(self,board,color):
+        if color == 1:
+            toPlay = 2
+        else:
+            toPlay = 1
+        legalmoves = GoBoardUtil.generate_legal_moves(self.board, color, True)
+        if not legalmoves:
+            return True,True
+        for m in legalmoves:
+            print(legalmoves)
+            print(m)
+            move = GoBoardUtil.move_to_coord(m,self.board.size)
+            move = self.board._coord_to_point(move[0],move[1])
+            board = self.board.SetMove(board,move, color)
+            success =  self.Solve(board,toPlay)
+            board = self.board.SetMove(board,move,0)
+            print(success)
+            if not success[0]:
+                return False, False
+        return True, True
+
