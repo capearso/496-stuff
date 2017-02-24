@@ -333,26 +333,20 @@ class GtpConnection():
                     self.toPlay = 'w'
                 else:
                     self.toPlay = 'b'
-                m = GoBoardUtil.move_to_coord(move[1],self.board.size)
-                m = self.board._coord_to_point(m[0],m[1])
-                self.board.SetMove(self.board,m, color)
-                self.respond(move[1])
+                self.board.SetMove(self.board,move[1], color)
+                x,y = self.board._point_to_coord(move[1])
+                test = GoBoardUtil.format_point((x, y))
+                self.respond(args[0]+" "+test)
             elif move[0] == False:
                 test = self.go_engine.get_move(self.board, color)
                 if test is None:
                     self.respond("resign")
                     return
                 else:
-                    m = self.board._point_to_coord(test)
-                    point = GoBoardUtil.format_point(m)
-                    m = self.board._coord_to_point(m[0],m[1])
-                    if self.toPlay == 'b':
-                        self.toPlay = 'w'
-                    else:
-                        self.toPlay = 'b'
-                    print(m)
-                    self.board.move(m, color)
-                    self.respond(point)
+                    self.board.SetMove(self.board,test, color)
+                    x,y = self.board._point_to_coord(test)
+                    test = GoBoardUtil.format_point((x, y))
+                    self.respond(args[0]+" "+test)
         except Exception as e:
             self.respond('Error: {}'.format(str(e)))
 
@@ -364,28 +358,26 @@ class GtpConnection():
         self.respond()
 
     def solve_cmd(self,args):
+        self.starttime = time.process_time()
+        self.timeUsed = 0
         if self.toPlay == 'b':
             color = 1
             player = "b"
-            self.toPlay = 'w'
+            opp = "w"
         else:
             color = 2
             player = "w"
-            self.toPlay = 'b'
-        self.starttime = time.process_time()
-        self.timeUsed = 0
+            opp = "b"
         win = self.Solve(self.board,color)
-        print(win)
         self.timeUsed = time.process_time() - self.starttime
         if win == 'unknown':
             self.respond('unknown')
         elif win[0] == True:
-            move = GoBoardUtil.move_to_coord(win[1],self.board.size)
-            move = self.board._coord_to_point(move[0],move[1])
-            board = self.board.SetMove(self.board,move, color)
-            self.respond(player + " "+ win[1])
+            x, y = self.board._point_to_coord(win[1])
+            move = GoBoardUtil.format_point((x, y))
+            self.respond(player + " "+ move)
         else:
-            self.respond(self.toPlay)
+            self.respond(opp)
 
 
     def Solve(self,board,color):
@@ -397,17 +389,14 @@ class GtpConnection():
         if not legalmoves:
             return False,False
         for m in legalmoves:
-            move = GoBoardUtil.move_to_coord(m,self.board.size)
-            move = self.board._coord_to_point(move[0],move[1])
-            board = self.board.SetMove(board,move, color)
+            self.board.SetMove(board,m, color)
             success =  self.MinimaxBooleanAND(board,toPlay)
-            board = self.board.SetMove(board,move,0)
+            self.board.SetMove(board,m,0)
             self.timeUsed = time.process_time() - self.starttime
             if self.timeUsed > self.timelimit:
                 return("unknown")
             if success[0]:
                 return True,m
-            
         return False, False
 
     def MinimaxBooleanAND(self,board,color):
@@ -419,18 +408,12 @@ class GtpConnection():
         self.timeUsed = time.process_time() - self.starttime
         if self.timeUsed > self.timelimit:
             return(False, False)
-            
         if not legalmoves:
             return True,True
         for m in legalmoves:
-            print(legalmoves)
-            print(m)
-            move = GoBoardUtil.move_to_coord(m,self.board.size)
-            move = self.board._coord_to_point(move[0],move[1])
-            board = self.board.SetMove(board,move, color)
+            self.board.SetMove(board,m, color)
             success =  self.Solve(board,toPlay)
-            board = self.board.SetMove(board,move,0)
-            print(success)
+            self.board.SetMove(board,m,0)
             if not success[0]:
                 return False, False
         return True, True

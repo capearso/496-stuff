@@ -31,14 +31,16 @@ class GoBoardUtil(object):
                 illegal_moves.append(i)
         legal_moves = np.delete(moves, illegal_moves)
         gtp_moves = []
+        moves = []
         for point in legal_moves:
             x, y = board._point_to_coord(point)
+            moves.append(point)
             gtp_moves.append(GoBoardUtil.format_point((x, y)))
         sorted_moves = ' '.join(sorted(gtp_moves))
         if bool == False:
             return sorted_moves
         else:
-            return sorted(gtp_moves)
+            return sorted(moves)
             
     @staticmethod       
     def generate_random_move(board, color):
