@@ -372,8 +372,11 @@ class GtpConnection():
             color = 2
             player = "w"
             self.toPlay = 'b'
+        self.starttime = time.process_time()
+        self.timeUsed = 0
         win = self.Solve(self.board,color)
         print(win)
+        self.timeUsed = time.process_time() - self.starttime
         if win == 'unknown':
             self.respond('unknown')
         elif win[0] == True:
@@ -394,16 +397,17 @@ class GtpConnection():
         if not legalmoves:
             return False,False
         for m in legalmoves:
-            print(legalmoves)
-            print(m)
             move = GoBoardUtil.move_to_coord(m,self.board.size)
             move = self.board._coord_to_point(move[0],move[1])
             board = self.board.SetMove(board,move, color)
             success =  self.MinimaxBooleanAND(board,toPlay)
             board = self.board.SetMove(board,move,0)
-            print(success)
+            self.timeUsed = time.process_time() - self.starttime
+            if self.timeUsed > self.timelimit:
+                return("unknown")
             if success[0]:
                 return True,m
+            
         return False, False
 
     def MinimaxBooleanAND(self,board,color):
@@ -412,6 +416,10 @@ class GtpConnection():
         else:
             toPlay = 1
         legalmoves = GoBoardUtil.generate_legal_moves(self.board, color, True)
+        self.timeUsed = time.process_time() - self.starttime
+        if self.timeUsed > self.timelimit:
+            return(False, False)
+            
         if not legalmoves:
             return True,True
         for m in legalmoves:
