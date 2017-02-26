@@ -61,3 +61,6 @@ play b a1
 #? [w a2|w b1|w b2]
 #Black wins so it randomly selects a move from whats left
 
+100 timelimit 10
+#? []
+#Making sure we took out print and that timelimit actually works this version
