@@ -1,7 +1,10 @@
-boardsize 2
+boardsize 3
 clear_board
 play b a1
-play b b2
+playb b2
+play b c3
+play b a3
+play b c1
 10 solve
 #?[b]
 #Checking toPlay works properly if the current player loses
@@ -10,9 +13,10 @@ play b b2
 #? [resign]
 #Making sure genmove resigns when it has no legal moves
 
+
 30 genmove b
-#? [b a2|b b1]
-#Even though black has won it should still have moves left,
+#? [b1|b3|a2|c2]
+#Even though black has won it should still have moves left, enure it fills its own eyes
 
 boardsize 4
 clear_board
