@@ -323,6 +323,8 @@ class GtpConnection():
             board_color : {'b','w'}
         """
         try:
+            self.starttime = time.process_time()
+            self.timeUsed = 0
             board_color = args[0].lower()
             self.toPlay = board_color
             color = GoBoardUtil.color_to_int(board_color)
@@ -336,7 +338,7 @@ class GtpConnection():
                 self.board.SetMove(self.board,move[1], color)
                 x,y = self.board._point_to_coord(move[1])
                 test = GoBoardUtil.format_point((x, y))
-                self.respond(args[0]+" "+test)
+                self.respond(test)
             elif move[0] == False:
                 test = self.go_engine.get_move(self.board, color)
                 if test is None:
@@ -346,7 +348,11 @@ class GtpConnection():
                     self.board.SetMove(self.board,test, color)
                     x,y = self.board._point_to_coord(test)
                     test = GoBoardUtil.format_point((x, y))
-                    self.respond(args[0]+" "+test)
+                    if self.toPlay == 'b':
+                        self.toPlay = 'w'
+                    else:
+                        self.toPlay = 'b'
+                    self.respond(test)
         except Exception as e:
             self.respond('Error: {}'.format(str(e)))
 
