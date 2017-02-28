@@ -1,7 +1,7 @@
 boardsize 3
 clear_board
 play b a1
-playb b2
+play b b2
 play b c3
 play b a3
 play b c1
@@ -62,7 +62,7 @@ play b a1
 #?[b]
 #Black should win, sets up next test
 90 genmove w
-#? [w a2|w b1|w b2]
+#? [a2|b1|b2]
 #Black wins so it randomly selects a move from whats left
 
 100 timelimit 10
