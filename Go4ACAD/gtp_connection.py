@@ -35,6 +35,7 @@ class GtpConnection():
         self.go_engine.selfatari = 1 
         self.go_engine.pattern = 1
         self.board = GoBoard(7)
+        self.go_engine.num_simulation = 50
         self.param_options = {
             "selfatari" :  self.go_engine.selfatari,
             "pattern" : self.go_engine.pattern

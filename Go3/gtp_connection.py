@@ -34,6 +34,7 @@ class GtpConnection():
         self.go_engine.komi = 0
         self.go_engine.selfatari = 1 
         self.go_engine.pattern = 1
+        self.go_engine.num_simulation = 50
         self.board = GoBoard(7)
         self.commands = {
             "protocol_version": self.protocol_version_cmd,
