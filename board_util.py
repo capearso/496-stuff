@@ -80,14 +80,6 @@ class GoBoardUtil(object):
             Use in UI only. For playing, use generate_move_with_filter
             which is more efficient
         """
-        if board.last_move != None:
-        	opp = opponent(board.current_player)
-        	spots,move =  board._liberty(board.last_move,opp)
-        	if spots == 1:
-        		if board.check_legal(move,board.current_player):
-        			return move, "Atari Capture"
-        	else:
-        		pass
         pattern_moves = GoBoardUtil.generate_pattern_moves(board)
         pattern_moves = GoBoardUtil.filter_moves(board, pattern_moves, check_selfatari)
         if len(pattern_moves) > 0:
