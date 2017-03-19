@@ -16,7 +16,7 @@ class GtpConnection():
 
     def __init__(self, go_engine, debug_mode = False):
         """
-        Play Go over a GTP connection
+        object that plays Go using GTP
 
         Parameters
         ----------
@@ -35,10 +35,6 @@ class GtpConnection():
         self.go_engine.selfatari = 1 
         self.go_engine.pattern = 1
         self.board = GoBoard(7)
-        self.param_options = {
-            "selfatari" :  self.go_engine.selfatari,
-            "pattern" : self.go_engine.pattern
-        }
         self.commands = {
             "protocol_version": self.protocol_version_cmd,
             "quit": self.quit_cmd,
@@ -55,10 +51,6 @@ class GtpConnection():
             "play": self.play_cmd,
             "final_score": self.final_score_cmd,
             "legal_moves": self.legal_moves_cmd,
-            "policy_moves": self.policy_moves_cmd,
-            "random_moves": self.random_moves_cmd,
-            "go_param": self.go_param_cmd,
-            "gogui-analyze_commands": self.gogui_analyze_cmd,
             "num_sim": self.num_sim_cmd,
             "showoptions": self.showoptions_cmd
         }
@@ -72,11 +64,11 @@ class GtpConnection():
             "set_free_handicap": (1, 'Usage: set_free_handicap MOVE (e.g. A4)'),
             "genmove": (1, 'Usage: genmove {w, b}'),
             "play": (2, 'Usage: play {b, w} MOVE'),
-            "legal_moves": (0, 'Usage: legal_moves does not have arguments'),
-            "go_param": (2,'Usage: goparam {{{0}}} {{0,1}}'.format(' '.join(list(self.param_options.keys())))),
+            "legal_moves": (1, 'Usage: legal_moves {w, b}'),
             "num_sim":(1,'Usage: num_sim #(e.g. num_sim 100 )'),
-            "showoptions":(0,'Usage: showoptions does not have arguments')
+            "showoptions":(0,'showotions does not get arguments')
         }
+    
     def __del__(self):
         sys.stdout = self.stdout
 
@@ -134,7 +126,7 @@ class GtpConnection():
 
     def arg_error(self, cmd, argnum):
         """
-        checker function for the number of arguments given to a command
+        checker funciton for the number of arguments given to a command
 
         Arguments
         ---------
@@ -217,8 +209,6 @@ class GtpConnection():
     def showoptions_cmd(self,args):
         options = dict()
         options['komi'] = self.go_engine.komi
-        options['pattern'] = self.go_engine.pattern
-        options['selfatari'] = self.go_engine.selfatari
         options['num_sim'] = self.go_engine.num_simulation
         self.respond(options)
         
@@ -271,63 +261,27 @@ class GtpConnection():
 
     def legal_moves_cmd(self, args):
         """
-        list legal moves for current player
+        list legal moves for the given color
+        Arguments
+        ---------
+        args[0] : {'b','w'}
+            the color to play the move as
+            it gets converted to  Black --> 1 White --> 2
+            color : {0,1}
+            board_color : {'b','w'}
         """
-        color = self.board.current_player
-        legal_moves = GoBoardUtil.generate_legal_moves(self.board, color)
-        self.respond(GoBoardUtil.sorted_point_string(legal_moves, self.board.NS))
+        try:
+            board_color = args[0].lower()
+            color = GoBoardUtil.color_to_int(board_color)
+            moves = GoBoardUtil.generate_legal_moves_as_string(self.board, color)
+            self.respond(moves)
+        except Exception as e:
+            self.respond('Error: {}'.format(str(e)))
 
     def num_sim_cmd(self, args):
         self.go_engine.num_simulation = int(args[0])
         self.respond()
 
-    def go_param_cmd(self, args):
-        valid_values = [0,1]
-        valid_params = ['selfatari','pattern']
-        param = args[0]
-        param_value = int(args[1])
-        if param not in valid_params:
-            self.error('Unkown parameters: {}'.format(param))
-        if param_value not in valid_values:
-            self.error('Argument 2 ({}) must be of type bool'.format(param_value))
-        if param ==valid_params[1]:
-            self.go_engine.pattern = param_value
-        elif param == valid_params[0]:
-            self.go_engine.selfatari = param_value
-        self.param_options[param] = param_value
-        self.respond()
-
-    def policy_moves_cmd(self, args):
-        """
-            Return list of policy moves for the current_player of the board
-        """
-        policy_moves, type_of_move = GoBoardUtil.generate_all_policy_moves(self.board,
-                                                self.go_engine.pattern,
-                                                self.go_engine.selfatari)
-        if len(policy_moves) == 0:
-            self.respond("Pass")
-        else:
-            response = type_of_move + " " + GoBoardUtil.sorted_point_string(policy_moves, self.board.NS)
-            self.respond(response)
-
-    def random_moves_cmd(self, args):
-        """
-            Return list of random moves (legal, but not eye-filling)
-        """
-        moves = GoBoardUtil.generate_random_moves(self.board)
-        if len(moves) == 0:
-            self.respond("Pass")
-        else:
-            self.respond(GoBoardUtil.sorted_point_string(moves, self.board.NS))
-
-    def gogui_analyze_cmd(self, args):
-        try:
-            self.respond("pstring/Legal Moves/legal_moves\n"
-                         "pstring/Policy Moves/policy_moves\n"
-                         "pstring/Random Moves/random_moves\n"
-                        )
-        except Exception as e:
-            self.respond('Error: {}'.format(str(e)))
 
     def play_cmd(self, args):
         """
@@ -406,3 +360,4 @@ class GtpConnection():
             self.respond(board_move)
         except Exception as e:
             self.respond('Error: {}'.format(str(e)))
+

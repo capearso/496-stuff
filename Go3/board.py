@@ -12,15 +12,16 @@ glossary:
 
 """
 
+
 import numpy as np
-from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, FLOODFILL
+from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, FLOODFILL 
 
 class GoBoard(object):
 
     def move(self, point, color):
         """
             Play a move on the board.
-            Arguments:
+            Argumnets:
             point
             Return:
             color
@@ -30,10 +31,7 @@ class GoBoard(object):
             return False
         else:
             self.current_player = GoBoardUtil.opponent(color)
-            self.last2_move = self.last_move
-            self.last_move = point
-            self.moves.append(point)
-        return True
+            return True
 
     @staticmethod
     def showboard(board,bd_size):
@@ -44,7 +42,7 @@ class GoBoard(object):
     def get_color(self, point):
         """
         Return the state of the specified point.
-        Arguments:
+        Argumnets:
             point
         Return:
             color
@@ -53,7 +51,7 @@ class GoBoard(object):
 
     def check_legal(self,point,color):
         """
-        Arguments:
+        Argumnets:
             point, color
         Return:
             bool
@@ -62,14 +60,14 @@ class GoBoard(object):
         """
         cboard = self.copy()
         # swap out true board for simulation board, and try to play the move
-        result, _ = cboard._play_move(point, color)
+        result, _= cboard._play_move(point, color)
         return result
 
     def final_score(self,komi):
         """
         Calculate score of board state and return player ID (1, -1, or 0 for tie)
         corresponding to winner. Uses 'Area scoring'.
-        Arguments:
+        Argumnets:
             komi, number of points added to white because of starting second
         Returns:
             score: score of the game in the format of `X+{n}` where is either B or W
@@ -114,7 +112,7 @@ class GoBoard(object):
             self.final_score(komi)
         return self.winner
 
-    def get_twoD_board(self):
+    def get_twoD_board(self,):
         """
         Return: numpy array
         a two dimensional numpy array with same values as in the self.board without having the borders
@@ -177,10 +175,6 @@ class GoBoard(object):
         self.winner = None
         self._empty_positions = {BLACK:[],WHITE:[]}
         self.maxpoint = size*size + 3*(size+1)  # Attention we are doing zero indexing so everything is of by one
-        self.moves = []
-        self.last_move = None
-        self.last2_move = None
-        
         """
         The array is one-dimensional and this representation is achieved through _coord_to_point function
         This is an example of 3x3 board point numbering (indices of numpy array).
@@ -493,48 +487,7 @@ class GoBoard(object):
         #else:
         #    raise ValueError("This point is out of range!")
 
-    def neighborhood_33(self,point):
-        """
-        Get the pattern around point.
-        Returns
-        -------
-        patterns :
-        Set of patterns in the same format of what michi pattern base provides. Please refer to pattern.py to see the format of the pattern.
-        """
-        positions = [point-self.NS-1, point-self.NS, point-self.NS+1,
-                     point-1, point, point+1,
-                     point+self.NS-1, point+self.NS, point+self.NS+1]
-                     
-        pattern = ""
-        for d in positions:
-            if self.board[d] == self.current_player:
-                pattern += 'X'
-            elif self.board[d] == GoBoardUtil.opponent(self.current_player):
-                pattern += 'x'
-            elif self.board[d] == EMPTY:
-                pattern += '.'
-            elif self.board[d] == BORDER:
-                pattern += ' '
-        return pattern
-    
-    def last_moves_empty_neighbors(self):
-        """
-        Get the neighbors of last_move and second last move. 
-        This function is based on code in
-        https://github.com/pasky/michi/blob/master/michi.py
-        
-        Returns
-        -------
-        points :
-        points which are neighbors of last_move and last2_move
-        """
-        nb_list = []
-        for c in self.last_move, self.last2_move:
-            if c is None:  continue
-            nb_of_c_list = list(self._neighbors(c) + self._diag_neighbors(c))
-            nb_list += [d for d in nb_of_c_list if self.board[d] == EMPTY and d not in nb_list]
-        return nb_list
-            
+
     def _border_removal(self,points):
         """
         Removes Border points from a list of points received as Input and Return the result
@@ -599,7 +552,7 @@ class GoBoard(object):
         Arguments
         ---------
          x , y : int
-                 coordinates of the point  1 <= x, y <= size
+                 coordination of the board  1<= x <=size, 1<= y <=sizeint
 
         Returns
         -------
@@ -610,5 +563,20 @@ class GoBoard(object):
         return self.NS*row + col
 
     def _point_to_coord(self,point):
-        return GoBoardUtil.point_to_coord(point, self.NS)
+        """
+        Transform one dimension presentation to two dimensional.
+
+        Arguments
+        ---------
+        point
+
+        Returns
+        -------
+        x , y : int
+            coordination of the board  1<= x <=size, 1<= y <=size .
+        """
+        if point is None:
+            return 'pass'
+        row, col = divmod(point, self.NS)
+        return row,col
 
