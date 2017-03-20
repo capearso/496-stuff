@@ -107,10 +107,14 @@ class GoBoardUtil(object):
                                         if board.check_legal(move[0],board.current_player):
                                             pattern_moves.append(move[0])
                 i = 0
-                while i < len(pattern_moves):
-                    if GoBoardUtil.selfatari_filter(board, pattern_moves[i], board.current_player):
-                        pattern_moves.remove(i)
+                f = len(pattern_moves)-1
+                while 0 <= f:
+                    if i > f:
+                        break
+                    elif GoBoardUtil.selfatari_filter(board, pattern_moves[i], board.current_player):       
+                        pattern_moves.pop(i)
                         i -= 1
+                        f -= 1
                     i +=1
                         
                 if pattern_moves:
@@ -214,15 +218,16 @@ class GoBoardUtil(object):
                     neigbor2 = []
                     for n in neighbors:
                         if board.board[n] == board.current_player:
-                            spots,move =  board._liberty(n,board.current_player)
+                            spots,amove =  board._liberty(n,board.current_player)
                             if spots == 1:
-                                pattern_moves.append(move[0])
+                                pattern_moves.append(amove[0])
                                 neigbor2 += board._neighbors(n)
-                    for i in neigbor2:
-                        if board.board[i] == opp:
-                            spots,move =  board._liberty(i,opp)
-                            if spots == 1:
-                            	pattern_moves.append(move[0])
+                            for i in neigbor2:
+                                if board.board[i] == opp:
+                                    spots,move =  board._liberty(i,opp)
+                                    if spots == 1:
+                                        if board.check_legal(move[0],board.current_player):
+                                            pattern_moves.append(move[0])
                     move = GoBoardUtil.filter_moves_and_generate(board, pattern_moves, 
                                                          check_selfatari)               
             if move == None:
