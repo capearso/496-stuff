@@ -216,13 +216,15 @@ class GoBoardUtil(object):
                         if board.board[n] == board.current_player:
                             spots,move =  board._liberty(n,board.current_player)
                             if spots == 1:
-                                pattern_moves.append(move[0])
+                                if board.check_legal(move[0],board.current_player):
+                                    pattern_moves.append(move[0])
                                 neigbor2 += board._neighbors(n)
                     for i in neigbor2:
                         if board.board[i] == opp:
                             spots,move =  board._liberty(i,opp)
                             if spots == 1:
-                            	pattern_moves.append(move[0])
+                                if board.check_legal(move[0],board.current_player):
+                                    pattern_moves.append(move[0])
                     move = GoBoardUtil.filter_moves_and_generate(board, pattern_moves, 
                                                          check_selfatari)               
             if move == None:

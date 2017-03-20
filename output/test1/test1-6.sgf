@@ -7,9 +7,8 @@ White version: 0.3
 Result[Black\]: W+31.5
 Result[White\]: W+31.5
 Host: winfield (Intel(R) Core(TM)2 CPU          6600  @ 2.40GHz)
-Date: March 18, 2017 11:40:20 PM MDT]
-;B[de];W[cd];B[dd];W[bc];B[dc];W[ba];B[cb];W[bb];B[bd];W[be]
-;B[ce];W[ad];B[cc];W[bd];B[ee];W[ed];B[ac];W[ec];B[ab];W[db]
-;B[eb];W[ed];B[ec];W[aa];B[ed];W[ac];B[ca];W[da];B[ea];W[db]
-;B[da];W[db];B[ce];W[de];B[ee];W[dd];B[ed];W[cc];B[dc];W[ec]
-;B[ee];W[ed];B[cb];W[eb];B[ca];W[da];B[cb];W[ca];B[];W[])
+Date: March 19, 2017 12:13:26 AM MDT]
+;B[db];W[cc];B[bd];W[cd];B[bc];W[cb];B[eb];W[ed];B[dd];W[de]
+;B[ab];W[dc];B[bb];W[ae];B[ca];W[be];B[ec];W[ce];B[ad];W[aa]
+;B[ac];W[ba];B[ad];W[bd];B[ac];W[bc];B[ab];W[bb];B[ad];W[ac]
+;B[da];W[ea];B[ec];W[db];B[ca];W[eb];B[];W[da];B[];W[])
