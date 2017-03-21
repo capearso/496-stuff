@@ -1,0 +1,15 @@
+(;FF[4]CA[UTF-8]AP[gogui-twogtp:1.4.9]SZ[5]
+KM[6.5]PB[Go3]PW[Go4]DT[2017-03-20]RE[W+31.5]
+C[Black command: /cshome/cs3/496/496-stuff/Go3/Go3.py
+White command: /cshome/cs3/496/496-stuff/Go4ACAD/Go4ACAD.py
+Black version: 0.22
+White version: 0.3
+Result[Black\]: W+31.5
+Result[White\]: W+31.5
+Host: winfield (Intel(R) Core(TM)2 CPU          6600  @ 2.40GHz)
+Date: March 20, 2017 3:15:56 AM MDT]
+;B[dd];W[bb];B[dc];W[cc];B[bd];W[db];B[cd];W[ce];B[ec];W[bc]
+;B[eb];W[da];B[ca];W[ba];B[ac];W[ab];B[ae];W[cb];B[be];W[de]
+;B[ee];W[ce];B[de];W[ad];B[ce];W[ac];B[ed];W[ea];B[ae];W[be]
+;B[ce];W[de];B[ee];W[bd];B[cd];W[dd];B[ce];W[cd];B[ed];W[dc]
+;B[ec];W[eb];B[ee];W[ed];B[];W[])

@@ -321,6 +321,7 @@ class GoBoard(object):
         group_points = [point]
         liberty=0
         met_points=[point]
+        freespots =[]
         while group_points:
             p=group_points.pop()
             met_points.append(p)
@@ -333,8 +334,9 @@ class GoBoard(object):
                         group_points.append(n)
                     elif self.board[n]==EMPTY:
                         liberty+=1
+                        freespots.append(n)
                     met_points.append(n)
-        return liberty
+        return liberty,freespots
 
 
     def _liberty_flood(self,board):

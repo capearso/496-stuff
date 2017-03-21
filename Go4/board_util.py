@@ -80,6 +80,45 @@ class GoBoardUtil(object):
             Use in UI only. For playing, use generate_move_with_filter
             which is more efficient
         """
+        pattern_moves = []
+        if board.last_move != None:
+            opp = GoBoardUtil.opponent(board.current_player)
+            spots,move =  board._liberty(board.last_move,opp)
+            if spots == 1 and board.check_legal(move[0],board.current_player):
+                pattern_moves = [] 
+                if board.check_legal(move[0],board.current_player):
+                    pattern_moves.append(move[0])
+                    if not GoBoardUtil.selfatari_filter(board, move[0], board.current_player):
+                        return pattern_moves, "AtariCapture"
+            else:
+                pattern_moves = []
+                neighbors = board._neighbors(board.last_move)
+                for n in neighbors:
+                    if board.board[n] == board.current_player:
+                        spots,move =  board._liberty(n,board.current_player)
+                        if spots == 1:
+                            if board.check_legal(move[0],board.current_player):
+                                pattern_moves.append(move[0])
+                            neigbor2 = board._neighbors(n)
+                            for i in neigbor2:
+                                if board.board[i] == opp:
+                                    spots,move =  board._liberty(i,opp)
+                                    if spots == 1:
+                                        if board.check_legal(move[0],board.current_player):
+                                            pattern_moves.append(move[0])
+                i = 0
+                f = len(pattern_moves)-1
+                while 0 <= f:
+                    if i > f:
+                        break
+                    elif GoBoardUtil.selfatari_filter(board, pattern_moves[i], board.current_player):       
+                        pattern_moves.pop(i)
+                        i -= 1
+                        f -= 1
+                    i +=1
+                        
+                if pattern_moves:
+                    return pattern_moves, "AtariDefense"
         pattern_moves = GoBoardUtil.generate_pattern_moves(board)
         pattern_moves = GoBoardUtil.filter_moves(board, pattern_moves, check_selfatari)
         if len(pattern_moves) > 0:
@@ -165,11 +204,38 @@ class GoBoardUtil(object):
         """
         move = None
         if use_pattern:
-            moves = GoBoardUtil.generate_pattern_moves(board)
-            move = GoBoardUtil.filter_moves_and_generate(board, moves, 
+            if board.last_move != None:
+                opp = GoBoardUtil.opponent(board.current_player)
+                pattern_moves = []
+                spots,amoves =  board._liberty(board.last_move,opp)
+                if spots == 1:
+                    pattern_moves.append(amoves)
+                    move = GoBoardUtil.filter_moves_and_generate(board, pattern_moves[0], 
+                                                      check_selfatari)
+                if move == None:
+                    pattern_moves = []
+                    neighbors = board._neighbors(board.last_move)
+                    neigbor2 = []
+                    for n in neighbors:
+                        if board.board[n] == board.current_player:
+                            spots,amove =  board._liberty(n,board.current_player)
+                            if spots == 1:
+                                pattern_moves.append(amove[0])
+                                neigbor2 += board._neighbors(n)
+                            for i in neigbor2:
+                                if board.board[i] == opp:
+                                    spots,move =  board._liberty(i,opp)
+                                    if spots == 1:
+                                        if board.check_legal(move[0],board.current_player):
+                                            pattern_moves.append(move[0])
+                    move = GoBoardUtil.filter_moves_and_generate(board, pattern_moves, 
+                                                         check_selfatari)               
+            if move == None:
+                moves = GoBoardUtil.generate_pattern_moves(board)
+                move = GoBoardUtil.filter_moves_and_generate(board, moves, 
                                                          check_selfatari)
-        if move == None:
-            move = GoBoardUtil.generate_random_move(board)
+            if move == None:
+                move = GoBoardUtil.generate_random_move(board)
         return move 
     
     @staticmethod
@@ -181,7 +247,7 @@ class GoBoardUtil(object):
         # swap out true board for simulation board, and try to play the move
         isLegal = cboard.move(move, color) 
         if isLegal:               
-            new_liberty = cboard._liberty(move,color)
+            new_liberty,blank = cboard._liberty(move,color)
             if new_liberty==1:
                 return True 
         return False
@@ -193,7 +259,7 @@ class GoBoardUtil(object):
         neighbors = board._neighbors(point)
         for n in neighbors:
             if board.board[n] == color:
-                num_lib = board._liberty(n,color) 
+                num_lib,blank = board._liberty(n,color) 
                 if num_lib > limit:
                     return num_lib
                 if num_lib > max_lib:

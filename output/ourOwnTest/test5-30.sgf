@@ -1,0 +1,15 @@
+(;FF[4]CA[UTF-8]AP[gogui-twogtp:1.4.9]SZ[5]
+KM[6.5]PB[Go4:0.3]PW[Go4:0.3]DT[2017-03-20]RE[B+18.5]
+C[Black command: /cshome/cs3/496/496-stuff/Go4AC/Go4AC.py
+White command: /cshome/cs3/496/496-stuff/Go4ACAD/Go4ACAD.py
+Black version: 0.3
+White version: 0.3
+Result[Black\]: B+18.5
+Result[White\]: B+18.5
+Host: ug12 (Intel(R) Core(TM) i7-2600 CPU @ 3.40GHz)
+Date: March 20, 2017 6:02:00 PM MDT]
+;B[cd];W[cc];B[dc];W[bd];B[dd];W[bc];B[cb];W[de];B[ba];W[bb]
+;B[be];W[ed];B[db];W[ce];B[ee];W[de];B[ec];W[ad];B[ee];W[ab]
+;B[ca];W[ed];B[aa];W[];B[eb];W[];B[ce];W[];B[ee];W[ae]
+;B[ac];W[ae];B[ad];W[bd];B[ae];W[bc];B[cc];W[ab];B[bb];W[bd]
+;B[bc];W[da];B[ea];W[];B[])
