@@ -118,13 +118,8 @@ class GoBoardUtil(object):
         i = 0
         word = ""
         for i in range(len(answer)):
-            word += str(answer[i][0:2]) + str(answer[i][1][2:]) + " "
-
-        word.split()
-        returnWord = ''
-        for words in word:
-            returnWord += words
-        return returnWord
+            word += str(answer[i][0]) + str(answer[i][1][2:]) + " "
+        return word
 
     
     @staticmethod
